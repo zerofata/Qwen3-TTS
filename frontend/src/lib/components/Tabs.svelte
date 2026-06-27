@@ -38,20 +38,26 @@
     min-width: max-content;
     padding: 0.5rem 0.9rem;
     border: none;
+    border-bottom: 2px solid transparent;
     background: transparent;
     color: var(--muted);
-    font-size: var(--text-sm);
-    font-weight: 560;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-weight: 500;
     border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: background-color 0.12s ease, color 0.12s ease;
+    transition: background-color var(--transition-fast),
+      color var(--transition-fast), border-color var(--transition-fast);
   }
   .tab:hover {
     color: var(--text);
   }
   .tab.active {
     background: var(--surface);
-    color: var(--text);
+    color: var(--accent-ink);
+    border-bottom-color: var(--accent);
     box-shadow: var(--shadow-sm);
   }
 </style>

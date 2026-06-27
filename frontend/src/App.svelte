@@ -83,6 +83,7 @@
     padding: var(--space-4) var(--space-6);
     background: var(--surface);
     border-bottom: 1px solid var(--border);
+    box-shadow: 0 2px 16px -4px rgba(0, 0, 0, 0.25);
   }
   .brand {
     display: flex;
@@ -97,12 +98,19 @@
     border-radius: var(--radius-md);
     background: var(--accent);
     color: var(--accent-contrast);
-    font-weight: 700;
-    font-size: var(--text-sm);
-    letter-spacing: 0.02em;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: var(--text-base);
+    letter-spacing: 0.01em;
   }
   h1 {
-    font-size: var(--text-xl);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0;
+    font-size: var(--text-2xl);
+    line-height: 1.1;
   }
   .container {
     width: 100%;

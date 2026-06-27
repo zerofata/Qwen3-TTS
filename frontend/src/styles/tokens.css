@@ -1,7 +1,16 @@
 /* Design tokens: the single source of truth for color, space, type, and shape.
    Components reference only these variables, never raw values, so restyling the
-   whole app is a matter of editing this file. Light is the default; dark is
-   applied automatically via prefers-color-scheme. */
+   whole app is a matter of editing this file. The palette mirrors The Codeless
+   Umbrella blog (warm neutrals + gold). Light is the default; dark is applied
+   automatically via prefers-color-scheme.
+
+   Accent roles:
+     --accent          gold fill (buttons, bars, waveform)
+     --accent-hover    fill hover
+     --accent-contrast ink that sits ON a gold fill
+     --accent-ink      gold-toned TEXT/icons on normal surfaces (kept legible
+                       on light by using a deeper gold)
+     --accent-soft     faint gold tint for badges / dot field */
 
 :root {
   /* Spacing scale (4px base) */
@@ -15,9 +24,11 @@
   --space-8: 4rem;
 
   /* Type scale */
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system,
-    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas,
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: "Space Grotesk", "Inter", system-ui, sans-serif;
+  --font-display: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas,
     monospace;
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -28,59 +39,66 @@
   --leading-tight: 1.25;
   --leading-normal: 1.55;
 
-  /* Radius */
+  /* Radius (aligned to the blog) */
   --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
   --radius-full: 999px;
+
+  /* Motion */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
 
   /* Z layers */
   --z-toast: 1000;
 
-  /* Color roles - light theme */
-  --bg: #f6f7f9;
+  /* Color roles - light theme (warm neutrals + gold) */
+  --bg: #faf8f4;
   --surface: #ffffff;
-  --surface-2: #f1f3f6;
-  --border: #e2e6ec;
-  --border-strong: #cfd5de;
-  --text: #161a20;
-  --muted: #5b6472;
-  --accent: #4f46e5;
-  --accent-hover: #4338ca;
-  --accent-contrast: #ffffff;
-  --accent-soft: #eef0fe;
-  --danger: #dc2626;
-  --danger-soft: #fdecec;
-  --success: #15803d;
-  --focus-ring: rgba(79, 70, 229, 0.45);
+  --surface-2: #f3efe8;
+  --border: #e6e0d6;
+  --border-strong: #d3cabb;
+  --text: #1c1a17;
+  --muted: #6b6358;
+  --accent: #c9a84c;
+  --accent-hover: #b7942f;
+  --accent-contrast: #1c1a17;
+  --accent-ink: #8a6d22;
+  --accent-soft: rgba(201, 168, 76, 0.14);
+  --danger: #c0392b;
+  --danger-soft: #f9e7e4;
+  --success: #2f7d4f;
+  --focus-ring: rgba(201, 168, 76, 0.45);
 
-  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06),
-    0 1px 3px rgba(16, 24, 40, 0.08);
-  --shadow-md: 0 4px 12px rgba(16, 24, 40, 0.08),
-    0 2px 4px rgba(16, 24, 40, 0.06);
-  --shadow-lg: 0 12px 32px rgba(16, 24, 40, 0.14);
+  --shadow-sm: 0 1px 2px rgba(28, 26, 23, 0.06),
+    0 1px 3px rgba(28, 26, 23, 0.08);
+  --shadow-md: 0 4px 12px rgba(28, 26, 23, 0.08),
+    0 2px 4px rgba(28, 26, 23, 0.06);
+  --shadow-lg: 0 12px 32px rgba(28, 26, 23, 0.16);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #0f1115;
-    --surface: #171a21;
-    --surface-2: #1f232c;
-    --border: #2a2f3a;
-    --border-strong: #3a4150;
-    --text: #e8ebf0;
-    --muted: #97a0b0;
-    --accent: #7c81ff;
-    --accent-hover: #9296ff;
-    --accent-contrast: #0f1115;
-    --accent-soft: #1e2030;
+    --bg: #0c0a09;
+    --surface: #1a1816;
+    --surface-2: #221f1c;
+    --border: rgba(255, 255, 255, 0.1);
+    --border-strong: rgba(255, 255, 255, 0.18);
+    --text: #ece9e4;
+    --muted: #b5ada5;
+    --accent: #c9a84c;
+    --accent-hover: #ddbf5c;
+    --accent-contrast: #1c1a17;
+    --accent-ink: #ddbf5c;
+    --accent-soft: rgba(201, 168, 76, 0.12);
     --danger: #f87171;
-    --danger-soft: #2a1414;
+    --danger-soft: rgba(248, 113, 113, 0.12);
     --success: #4ade80;
-    --focus-ring: rgba(124, 129, 255, 0.5);
+    --focus-ring: rgba(201, 168, 76, 0.5);
 
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
-    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.55);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 24px -4px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.6);
   }
 }

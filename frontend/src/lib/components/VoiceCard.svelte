@@ -112,12 +112,18 @@
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
+    border-left: 2px solid var(--accent);
+    border-radius: var(--radius-sm) var(--radius-lg) var(--radius-lg)
+      var(--radius-sm);
     padding: var(--space-5);
     box-shadow: var(--shadow-sm);
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
+    transition: border-color var(--transition-smooth);
+  }
+  .card:hover {
+    border-left-color: var(--accent-hover);
   }
   .card-head {
     display: flex;
@@ -150,9 +156,11 @@
     padding: 0.1rem 0.45rem;
     border-radius: var(--radius-sm);
     background: var(--accent-soft);
-    color: var(--accent);
+    color: var(--accent-ink);
+    font-family: var(--font-mono);
     font-weight: 600;
-    text-transform: capitalize;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
   .head-actions {
     display: flex;

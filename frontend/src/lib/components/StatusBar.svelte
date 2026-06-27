@@ -58,6 +58,7 @@
     align-items: center;
     gap: var(--space-4);
     flex-wrap: wrap;
+    font-family: var(--font-mono);
     font-size: var(--text-xs);
   }
   .dot {
@@ -90,7 +91,7 @@
     padding: 0.1rem 0.4rem;
     border-radius: var(--radius-sm);
     background: var(--accent-soft);
-    color: var(--accent);
+    color: var(--accent-ink);
     font-weight: 600;
   }
 </style>

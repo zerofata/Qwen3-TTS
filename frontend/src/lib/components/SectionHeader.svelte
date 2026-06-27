@@ -11,6 +11,7 @@
     {#if step !== undefined}<span class="step">{step}</span>{/if}
     <h3>{title}</h3>
   </div>
+  <span class="accent-rule" aria-hidden="true"></span>
   {#if description}<p class="muted text-sm">{description}</p>{/if}
 </header>
 
@@ -34,11 +35,20 @@
     height: 1.5rem;
     border-radius: var(--radius-full);
     background: var(--accent-soft);
-    color: var(--accent);
+    color: var(--accent-ink);
+    font-family: var(--font-mono);
     font-size: var(--text-xs);
-    font-weight: 700;
+    font-weight: 600;
+  }
+  .accent-rule {
+    display: block;
+    width: 2.25rem;
+    height: 2px;
+    margin-top: var(--space-2);
+    border-radius: var(--radius-full);
+    background: var(--accent);
   }
   p {
-    margin-top: var(--space-1);
+    margin-top: var(--space-2);
   }
 </style>
