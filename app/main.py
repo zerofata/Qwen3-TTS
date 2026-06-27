@@ -32,6 +32,18 @@ def get_gradio_app() -> gr.Blocks:
     return create_app()
 
 
+def get_ui_assets() -> dict:
+    """Theme/css/js/head for the mounted Gradio app (moved off Blocks in gr 6)."""
+    from app.ui.gradio_app import THEME, THEME_CSS, BACKGROUND_JS, HEAD
+
+    return {
+        "theme": THEME,
+        "css": THEME_CSS,
+        "js": BACKGROUND_JS or None,
+        "head": HEAD,
+    }
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Handle application startup and shutdown."""
@@ -69,4 +81,9 @@ async def health_check() -> dict:
 
 
 gradio_interface = get_gradio_app()
-app = gr.mount_gradio_app(app, gradio_interface, path="/ui")
+app = gr.mount_gradio_app(
+    app,
+    gradio_interface,
+    path="/ui",
+    **get_ui_assets(),
+)

@@ -54,13 +54,14 @@ THEME = gr.themes.Base(
 
 
 def create_app() -> gr.Blocks:
-    """Create the main Gradio Blocks app."""
+    """Create the main Gradio Blocks app.
+
+    Note: in Gradio 6.0 the theme/css/js/head params were moved off the Blocks
+    constructor. They are applied where this app is mounted (see app/main.py
+    passing THEME/THEME_CSS/BACKGROUND_JS/HEAD to mount_gradio_app).
+    """
     with gr.Blocks(
         title="Qwen 3 TTS",
-        theme=THEME,
-        css=THEME_CSS,
-        js=BACKGROUND_JS,
-        head=HEAD,
         elem_id="app-root",
     ) as demo:
         # Branded hero header
