@@ -109,7 +109,7 @@ def load_model_on_select():
 def create_custom_voice_tab() -> gr.Tab:
     """Create the Custom Voice tab."""
     with gr.Tab("Custom Voice") as tab:
-        gr.Markdown("### Custom Voice Generation")
+        gr.Markdown("### Custom Voice Generation", elem_classes="section-title")
         gr.Markdown(
             "Generate high-quality speech using premium preset speakers. "
             "Supports 10 languages with auto-detection."
@@ -118,7 +118,7 @@ def create_custom_voice_tab() -> gr.Tab:
         # Status indicator
         status_text = gr.Markdown(value="", visible=False)
 
-        with gr.Row():
+        with gr.Row(elem_classes="arcane-panel"):
             with gr.Column():
                 text_input = gr.TextArea(
                     label="Text to Speak",

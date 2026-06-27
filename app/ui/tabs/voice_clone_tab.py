@@ -213,7 +213,7 @@ def load_model_on_select():
 def create_voice_clone_tab() -> gr.Tab:
     """Create the Voice Clone tab."""
     with gr.Tab("Voice Clone") as tab:
-        gr.Markdown("### Voice Cloning")
+        gr.Markdown("### Voice Cloning", elem_classes="section-title")
         gr.Markdown(
             "Clone a voice from a short audio sample. "
             "Requires transcription of the reference audio."
@@ -222,7 +222,7 @@ def create_voice_clone_tab() -> gr.Tab:
         # Holds the prompt from the latest successful clone for saving.
         prompt_state = gr.State(None)
 
-        with gr.Row():
+        with gr.Row(elem_classes="arcane-panel"):
             with gr.Column(scale=1):
                 gr.Markdown("#### 1. Reference Audio")
 

@@ -13,7 +13,6 @@ from typing import Tuple, Optional, Any
 
 from app.core.model_manager import model_manager
 from app.core.voice_library import voice_library, _write_wav
-from app.ui.components.model_status_bar import create_model_status_bar
 
 
 def generate_audio(
@@ -132,16 +131,13 @@ def load_model_on_select():
 def create_voice_design_tab() -> gr.Tab:
     """Create the Voice Design tab."""
     with gr.Tab("Voice Design") as tab:
-        # Status bar to show model loading state
-        create_model_status_bar()
-
-        gr.Markdown("### Voice Design")
+        gr.Markdown("### Voice Design", elem_classes="section-title")
         gr.Markdown(
             "Create a new voice by describing it in natural language. "
             "Describe gender, age, tone, emotion, and speaking style."
         )
 
-        with gr.Row():
+        with gr.Row(elem_classes="arcane-panel"):
             with gr.Column():
                 text_input = gr.TextArea(
                     label="Text to Speak",

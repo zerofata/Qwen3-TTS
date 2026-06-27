@@ -99,14 +99,14 @@ def delete_voice(
 def create_voice_library_tab() -> gr.Tab:
     """Create the Voice Library tab."""
     with gr.Tab("Voice Library") as tab:
-        gr.Markdown("### Voice Library")
+        gr.Markdown("### Voice Library", elem_classes="section-title")
         gr.Markdown(
             "Reuse any voice you saved from the Voice Clone or Voice Design "
             "tabs. Saved voices are also selectable through the API "
             "(`/v1/audio/speech` with `voice` set to the voice id)."
         )
 
-        with gr.Row():
+        with gr.Row(elem_classes="arcane-panel"):
             with gr.Column(scale=1):
                 voice_dropdown = gr.Dropdown(
                     label="Saved Voices",

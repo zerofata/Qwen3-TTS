@@ -1,0 +1,332 @@
+/* ===========================================================================
+   Qwen 3 TTS - "Arcane Studio" theme
+   Modern + fantasy: dark glass panels with glowing edges, display-serif
+   headings (Cinzel) over a clean sans body (Inter), amber/violet accents,
+   and a subtle ambient canvas (see background.js) drifting behind it all.
+   Selectors prefer our own elem_ids/[role] attributes over Gradio's hashed
+   classes so upstream bumps are less likely to break styling.
+   =========================================================================== */
+
+:root {
+  --arc-bg: #0a0712;
+  --arc-bg-2: #120c1f;
+  --arc-panel: rgba(24, 18, 38, 0.62);
+  --arc-panel-solid: #18122a;
+  --arc-border: rgba(196, 162, 92, 0.22);
+  --arc-border-strong: rgba(196, 162, 92, 0.45);
+  --arc-text: #ece6f5;
+  --arc-text-dim: #a89fbd;
+  --arc-amber: #e8b85c;
+  --arc-amber-soft: #f1cf8a;
+  --arc-violet: #8b5cf6;
+  --arc-violet-soft: #b18bff;
+  --arc-glow-amber: rgba(232, 184, 92, 0.35);
+  --arc-glow-violet: rgba(139, 92, 246, 0.40);
+  --arc-radius: 14px;
+  --arc-serif: "Cinzel", "Trajan Pro", Georgia, serif;
+  --arc-sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* ---- Base canvas: let the ambient background show through ---------------- */
+html, body, gradio-app {
+  background: radial-gradient(1200px 800px at 50% -10%, #1a1130 0%, var(--arc-bg) 60%, #060409 100%) !important;
+  color: var(--arc-text);
+  font-family: var(--arc-sans);
+}
+
+gradio-app { background: transparent !important; }
+
+#app-root, .gradio-container {
+  background: transparent !important;
+  max-width: 1180px !important;
+  margin: 0 auto !important;
+}
+
+/* The ambient canvas is fixed behind everything (created by background.js) */
+#arcane-bg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+#app-root { position: relative; z-index: 1; }
+
+/* ---- Typography --------------------------------------------------------- */
+#app-root h1, #app-root h2, #app-root h3,
+#app-root .section-title h1,
+#app-root .section-title h2,
+#app-root .section-title h3 {
+  font-family: var(--arc-serif);
+  letter-spacing: 0.04em;
+  color: var(--arc-amber-soft);
+  text-shadow: 0 0 18px var(--arc-glow-amber);
+  font-weight: 700;
+}
+
+#app-root .prose, #app-root p, #app-root label, #app-root .gr-text {
+  color: var(--arc-text);
+}
+#app-root .prose p, #app-root .section-title + * p { color: var(--arc-text-dim); }
+
+/* ---- Hero header -------------------------------------------------------- */
+#app-hero {
+  text-align: center;
+  padding: 26px 10px 10px;
+  margin-bottom: 6px;
+  position: relative;
+}
+#app-hero h1 {
+  font-size: 3.1em !important;
+  margin: 0 0 6px;
+  background: linear-gradient(92deg, var(--arc-amber-soft) 0%, #fff6e2 35%, var(--arc-violet-soft) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 34px var(--arc-glow-violet);
+}
+#app-hero .arc-tagline {
+  font-family: var(--arc-sans);
+  font-size: 1.02em;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--arc-text-dim);
+}
+#app-hero::after {
+  content: "";
+  display: block;
+  width: 240px;
+  height: 2px;
+  margin: 16px auto 0;
+  background: linear-gradient(90deg, transparent, var(--arc-amber), var(--arc-violet), transparent);
+  box-shadow: 0 0 14px var(--arc-glow-amber);
+}
+
+/* ---- Status strip ------------------------------------------------------- */
+#status-strip {
+  background: transparent !important;
+  border: none !important;
+}
+#status-strip .arc-status {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 18px;
+  padding: 8px 14px;
+  margin: 4px auto 14px;
+  width: fit-content;
+  max-width: 100%;
+  background: var(--arc-panel);
+  border: 1px solid var(--arc-border);
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 22px rgba(0,0,0,0.5), inset 0 0 18px rgba(139,92,246,0.06);
+  font-size: 0.86em;
+}
+#status-strip .arc-status .item {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--arc-text-dim);
+  white-space: nowrap;
+}
+#status-strip .arc-status .item b {
+  color: var(--arc-text);
+  font-weight: 600;
+}
+#status-strip .arc-status .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--arc-text-dim);
+  box-shadow: 0 0 8px currentColor;
+}
+#status-strip .arc-status .dot.on { color: var(--arc-amber); background: var(--arc-amber); }
+#status-strip .arc-status .dot.idle { color: #5b5570; background: #5b5570; box-shadow: none; }
+#status-strip .arc-status .dot.gpu { color: var(--arc-violet-soft); background: var(--arc-violet-soft); }
+
+/* ---- Panels (etched glass, not sterile cards) --------------------------- */
+.arcane-panel {
+  background: var(--arc-panel) !important;
+  border: 1px solid var(--arc-border) !important;
+  border-radius: var(--arc-radius) !important;
+  padding: 18px 18px 16px !important;
+  position: relative;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04);
+  overflow: hidden;
+}
+/* glowing top hairline */
+.arcane-panel::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 8%; right: 8%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--arc-amber), var(--arc-violet), transparent);
+  opacity: 0.7;
+}
+/* faint corner flourish */
+.arcane-panel::after {
+  content: "";
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 120px; height: 120px;
+  background: radial-gradient(circle, var(--arc-glow-violet), transparent 70%);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Gradio's default group/box chrome -> transparent so our panels lead */
+#app-root .gr-group,
+#app-root .gr-box,
+#app-root .block.padded {
+  background: transparent;
+  border-color: transparent;
+}
+
+/* ---- Tabs (serif "chapters") ------------------------------------------- */
+#app-root .tab-nav, #app-root div[role="tablist"] {
+  border-bottom: 1px solid var(--arc-border) !important;
+  gap: 4px;
+  justify-content: center;
+}
+#app-root button[role="tab"] {
+  font-family: var(--arc-serif) !important;
+  font-size: 1.02em !important;
+  letter-spacing: 0.06em;
+  color: var(--arc-text-dim) !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 12px 20px !important;
+  position: relative;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+#app-root button[role="tab"]:hover {
+  color: var(--arc-amber-soft) !important;
+  text-shadow: 0 0 14px var(--arc-glow-amber);
+}
+#app-root button[role="tab"][aria-selected="true"],
+#app-root .tab-nav button.selected {
+  color: var(--arc-amber) !important;
+  text-shadow: 0 0 18px var(--arc-glow-amber);
+}
+#app-root button[role="tab"][aria-selected="true"]::after,
+#app-root .tab-nav button.selected::after {
+  content: "";
+  position: absolute;
+  left: 12%; right: 12%; bottom: -1px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--arc-amber), var(--arc-violet), transparent);
+  box-shadow: 0 0 12px var(--arc-glow-amber);
+}
+
+/* ---- Inputs / textareas / dropdowns ------------------------------------ */
+#app-root textarea,
+#app-root input[type="text"],
+#app-root input[type="number"],
+#app-root .gr-input,
+#app-root .wrap.svelte-1ipelgc,
+#app-root select {
+  background: rgba(10, 7, 18, 0.65) !important;
+  color: var(--arc-text) !important;
+  border: 1px solid var(--arc-border) !important;
+  border-radius: 10px !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+#app-root textarea:focus,
+#app-root input[type="text"]:focus,
+#app-root input[type="number"]:focus {
+  border-color: var(--arc-border-strong) !important;
+  box-shadow: 0 0 0 2px rgba(139,92,246,0.18), 0 0 16px var(--arc-glow-violet) !important;
+  outline: none !important;
+}
+#app-root label span, #app-root .gr-form label { color: var(--arc-text-dim) !important; }
+#app-root input::placeholder, #app-root textarea::placeholder { color: #6f6786 !important; }
+
+/* ---- Buttons ------------------------------------------------------------ */
+#app-root button.primary,
+#app-root button[variant="primary"],
+#app-root .primary > button {
+  background: linear-gradient(96deg, var(--arc-amber) 0%, #d98b3a 45%, var(--arc-violet) 100%) !important;
+  color: #1a1206 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em;
+  border: none !important;
+  border-radius: 11px !important;
+  box-shadow: 0 6px 22px var(--arc-glow-amber), 0 0 0 1px rgba(255,255,255,0.08) inset !important;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+#app-root button.primary:hover,
+#app-root button[variant="primary"]:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.07);
+  box-shadow: 0 10px 30px var(--arc-glow-amber), 0 0 22px var(--arc-glow-violet) !important;
+}
+#app-root button.secondary,
+#app-root button[variant="secondary"] {
+  background: rgba(139, 92, 246, 0.08) !important;
+  color: var(--arc-violet-soft) !important;
+  border: 1px solid var(--arc-border-strong) !important;
+  border-radius: 11px !important;
+  transition: box-shadow 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+#app-root button.secondary:hover,
+#app-root button[variant="secondary"]:hover {
+  color: #fff !important;
+  background: rgba(139, 92, 246, 0.18) !important;
+  box-shadow: 0 0 18px var(--arc-glow-violet) !important;
+}
+#app-root button.stop, #app-root button[variant="stop"] {
+  background: rgba(120, 30, 40, 0.35) !important;
+  color: #ffb3b8 !important;
+  border: 1px solid rgba(220, 80, 90, 0.45) !important;
+}
+#app-root button.stop:hover { box-shadow: 0 0 16px rgba(220,80,90,0.4) !important; }
+
+/* small "sm" buttons keep the look but lighter */
+#app-root button.sm { border-radius: 9px !important; }
+
+/* ---- Accordion ---------------------------------------------------------- */
+#app-root .label-wrap, #app-root details summary {
+  color: var(--arc-amber-soft) !important;
+  font-family: var(--arc-serif);
+  letter-spacing: 0.03em;
+}
+
+/* ---- Audio players ------------------------------------------------------ */
+#app-root .audio-container, #app-root .gr-audio {
+  border-radius: 12px !important;
+  border: 1px solid var(--arc-border) !important;
+  background: rgba(10, 7, 18, 0.5) !important;
+}
+
+/* ---- Footer ------------------------------------------------------------- */
+#app-footer {
+  text-align: center;
+  margin-top: 22px;
+  color: var(--arc-text-dim);
+}
+#app-footer .arc-rule {
+  width: 200px; height: 1px; margin: 0 auto 12px;
+  background: linear-gradient(90deg, transparent, var(--arc-border-strong), transparent);
+}
+#app-footer p { font-size: 0.82em; color: #6f6786; }
+
+/* ---- Scrollbar ---------------------------------------------------------- */
+#app-root *::-webkit-scrollbar { width: 10px; height: 10px; }
+#app-root *::-webkit-scrollbar-thumb {
+  background: rgba(139,92,246,0.35);
+  border-radius: 8px;
+}
+#app-root *::-webkit-scrollbar-track { background: transparent; }
+
+/* ---- Reduced motion: background.js also self-disables -------------------- */
+@media (prefers-reduced-motion: reduce) {
+  #arcane-bg { display: none; }
+}
+
+/* ---- Small screens ------------------------------------------------------ */
+@media (max-width: 720px) {
+  #app-hero h1 { font-size: 2.2em !important; }
+  #app-root button[role="tab"] { padding: 10px 12px !important; font-size: 0.92em !important; }
+}
