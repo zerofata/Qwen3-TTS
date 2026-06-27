@@ -19,13 +19,28 @@
     return () => clearInterval(id);
   });
 
+  function titleCase(slug: string): string {
+    return slug
+      .split("_")
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(" ");
+  }
+
+  // Friendly name of the resident model, or null when nothing is loaded.
   const modelLabel = $derived(
-    status?.current_model
-      ? status.current_model.replace(/_/g, " ")
-      : "idle"
+    status?.current_model ? titleCase(status.current_model) : null
   );
+
+  // Human-readable state. A model loads on demand and unloads when idle, so
+  // "Ready" (nothing resident, will load on first use) is a real, valid state.
+  const stateText = $derived(
+    !online ? "Offline" : modelLabel ? `${modelLabel} active` : "Ready"
+  );
+
+  // VRAM is only meaningful while a model is resident.
   const vram = $derived(
-    status?.gpu_memory_allocated_gb !== undefined &&
+    modelLabel &&
+      status?.gpu_memory_allocated_gb !== undefined &&
       status?.gpu_memory_total_gb !== undefined
       ? `${status.gpu_memory_allocated_gb.toFixed(1)} / ${status.gpu_memory_total_gb.toFixed(0)} GB`
       : null
@@ -33,9 +48,14 @@
 </script>
 
 <div class="status">
-  <span class="dot" class:offline={!online} title={online ? "Online" : "Unreachable"}></span>
-  <span class="item">
-    <span class="k">Model</span><span class="v">{modelLabel}</span>
+  <span class="state">
+    <span
+      class="dot"
+      class:offline={!online}
+      class:active={online && !!modelLabel}
+      title={online ? "Online" : "Unreachable"}
+    ></span>
+    <span class="state-text">{stateText}</span>
   </span>
   {#if status?.gpu_name}
     <span class="item">
@@ -61,12 +81,25 @@
     font-family: var(--font-mono);
     font-size: var(--text-xs);
   }
+  .state {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .state-text {
+    color: var(--text);
+    font-weight: 560;
+  }
   .dot {
     width: 8px;
     height: 8px;
     border-radius: var(--radius-full);
-    background: var(--success);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--success) 25%, transparent);
+    background: var(--muted);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--muted) 22%, transparent);
+  }
+  .dot.active {
+    background: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent);
   }
   .dot.offline {
     background: var(--danger);

@@ -32,7 +32,7 @@
   {onclick}
 >
   {#if loading}<span class="spinner" aria-hidden="true"></span>{/if}
-  <span class="label"><!-- -->{@render children?.()}</span>
+  <span class="btn-label"><!-- -->{@render children?.()}</span>
 </button>
 
 <style>

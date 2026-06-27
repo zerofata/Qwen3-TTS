@@ -43,7 +43,7 @@
       <span class="logo" aria-hidden="true">Q3</span>
       <div>
         <h1>Qwen 3 TTS</h1>
-        <p class="muted text-sm">Custom voices, voice design, and cloning for your table.</p>
+        <p class="muted text-sm">Custom voices, voice design, and cloning.</p>
       </div>
     </div>
     <StatusBar />
