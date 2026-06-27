@@ -4,19 +4,21 @@
 
 from fastapi import APIRouter, Depends
 
-from app.api.dependencies import get_voice_cache
+from app.api.dependencies import get_voice_library
 from app.api.schemas.openai import VoiceInfo, VoicesResponse
-from app.core.voice_clone_cache import VoiceCloneCache
+from app.core.voice_library import VoiceLibrary
 
 router = APIRouter()
 
 
 @router.get("/audio/voices", response_model=VoicesResponse)
 async def list_voices(
-    voice_cache: VoiceCloneCache = Depends(get_voice_cache),
+    voice_library: VoiceLibrary = Depends(get_voice_library),
 ) -> VoicesResponse:
-    """List available cloned voices."""
+    """List all saved voices in the library."""
 
-    if voice_cache.has_voice():
-        return VoicesResponse(voices=[VoiceInfo(id="active", name="Voix clonée")])
-    return VoicesResponse(voices=[])
+    voices = [
+        VoiceInfo(id=meta["slug"], name=meta.get("name", meta["slug"]))
+        for meta in voice_library.list_voices()
+    ]
+    return VoicesResponse(voices=voices)

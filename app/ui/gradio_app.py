@@ -7,6 +7,7 @@ import gradio as gr
 from app.ui.tabs.custom_voice_tab import create_custom_voice_tab
 from app.ui.tabs.voice_design_tab import create_voice_design_tab
 from app.ui.tabs.voice_clone_tab import create_voice_clone_tab
+from app.ui.tabs.voice_library_tab import create_voice_library_tab
 from app.ui.components.model_status_bar import create_model_status_bar
 from app.config import Settings
 
@@ -41,6 +42,7 @@ def create_app() -> gr.Blocks:
                 create_custom_voice_tab()
                 create_voice_design_tab()
                 create_voice_clone_tab()
+                create_voice_library_tab()
 
             # Footer
             gr.Markdown(

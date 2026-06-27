@@ -1,6 +1,7 @@
 """Voice Clone tab for Qwen3-TTS Gradio UI.
 
-Allows voice cloning from audio files with optional ASR transcription.
+Allows voice cloning from audio files with optional ASR transcription, and
+saving the cloned voice into the persistent Voice Library for reuse.
 """
 
 import os
@@ -12,6 +13,7 @@ from typing import Tuple, Optional, Any, List
 
 from app.core.model_manager import model_manager
 from app.core.voice_clone_cache import voice_cache
+from app.core.voice_library import voice_library
 from app.config import Settings
 
 settings = Settings()
@@ -124,11 +126,12 @@ def clone_and_generate(
     ref_audio: str,
     ref_text: str,
     text: str,
-) -> Tuple[int, np.ndarray]:
+) -> Tuple[Tuple[int, np.ndarray], Any]:
     """Clone voice and generate speech.
 
     Returns:
-        Tuple of (sample_rate, audio_array) for Gradio Audio component.
+        Tuple of ((sample_rate, audio_array), voice_clone_prompt). The prompt is
+        held in a gr.State so it can be saved to the library without re-cloning.
     """
     if not ref_audio:
         raise gr.Error("Please select reference audio.")
@@ -150,7 +153,7 @@ def clone_and_generate(
             ref_text=ref_text,
         )
 
-        # Cache the prompt for persistence
+        # Keep legacy single-slot cache working for backward compatibility.
         voice_cache.save_voice(prompt)
 
         # Generate
@@ -165,10 +168,37 @@ def clone_and_generate(
         if not isinstance(audio_data, np.ndarray):
             audio_data = np.array(audio_data)
 
-        return (sr, audio_data)
+        return (sr, audio_data), prompt
 
     except Exception as e:
         raise gr.Error(f"Cloning failed: {str(e)}")
+
+
+def save_to_library(
+    name: str,
+    prompt: Any,
+    ref_text: str,
+    audio: Optional[Tuple[int, np.ndarray]],
+) -> str:
+    """Persist the most recently cloned voice into the library."""
+    if prompt is None:
+        raise gr.Error("Clone & Generate a voice first, then save it.")
+    if not name or not name.strip():
+        raise gr.Error("Enter a voice name before saving.")
+
+    preview = audio if isinstance(audio, tuple) and len(audio) == 2 else None
+    try:
+        slug = voice_library.save(
+            name=name,
+            prompt_item=prompt,
+            source="clone",
+            ref_text=ref_text or "",
+            preview=preview,
+        )
+    except Exception as e:
+        raise gr.Error(f"Save failed: {str(e)}")
+
+    return f"✅ Saved '{name.strip()}' to the library (id: {slug})."
 
 
 def load_model_on_select():
@@ -188,6 +218,9 @@ def create_voice_clone_tab() -> gr.Tab:
             "Clone a voice from a short audio sample. "
             "Requires transcription of the reference audio."
         )
+
+        # Holds the prompt from the latest successful clone for saving.
+        prompt_state = gr.State(None)
 
         with gr.Row():
             with gr.Column(scale=1):
@@ -245,6 +278,22 @@ def create_voice_clone_tab() -> gr.Tab:
                     interactive=False,
                 )
 
+                gr.Markdown("#### 3. Save to Library")
+                gr.Markdown(
+                    "Give this voice a name to reuse it later from the "
+                    "Voice Library tab and the API."
+                )
+                voice_name_input = gr.Textbox(
+                    label="Voice Name",
+                    placeholder="e.g. Goblin King",
+                )
+                save_btn = gr.Button("💾 Save to Library", variant="secondary")
+                save_status = gr.Textbox(
+                    label="Save Status",
+                    interactive=False,
+                    placeholder="Save status will appear here...",
+                )
+
         # Event handlers
         def update_files():
             return gr.Dropdown(choices=get_voice_files())
@@ -271,7 +320,13 @@ def create_voice_clone_tab() -> gr.Tab:
         generate_btn.click(
             fn=clone_and_generate,
             inputs=[file_dropdown, ref_text_input, text_input],
-            outputs=[audio_output],
+            outputs=[audio_output, prompt_state],
+        )
+
+        save_btn.click(
+            fn=save_to_library,
+            inputs=[voice_name_input, prompt_state, ref_text_input, audio_output],
+            outputs=[save_status],
         )
 
         # Load model when tab is selected

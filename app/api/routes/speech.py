@@ -12,10 +12,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import Response
 from pydub import AudioSegment
 
-from app.api.dependencies import get_model_manager, get_voice_cache
+from app.api.dependencies import get_model_manager, get_voice_library
 from app.api.schemas.openai import SpeechRequest
 from app.core.model_manager import ModelManager
-from app.core.voice_clone_cache import VoiceCloneCache
+from app.core.voice_library import VoiceLibrary
 
 router = APIRouter()
 
@@ -59,13 +59,35 @@ def _mp3_bytes_from_wav(wav_bytes: bytes) -> bytes:
 @router.post("/audio/speech")
 async def create_speech(
     payload: SpeechRequest,
-    voice_cache: VoiceCloneCache = Depends(get_voice_cache),
+    voice_library: VoiceLibrary = Depends(get_voice_library),
     model_manager: ModelManager = Depends(get_model_manager),
 ) -> Response:
-    """Generate speech audio using a cached cloned voice."""
+    """Generate speech using a named voice from the library.
+
+    The OpenAI ``voice`` field selects a library voice by slug or name. When it
+    is omitted, the most recently saved voice is used.
+    """
+
+    requested = (payload.voice or "").strip()
+    if requested:
+        if not voice_library.exists(requested):
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unknown voice '{requested}'. Save it in the Voice "
+                "Library tab, or call GET /v1/audio/voices to list voices.",
+            )
+        target = requested
+    else:
+        target = voice_library.default()
+        if target is None:
+            raise HTTPException(
+                status_code=400,
+                detail="No voices saved yet. Create one in the Voice Library "
+                "tab (clone a voice or freeze a designed voice).",
+            )
 
     try:
-        prompt = voice_cache.get_voice()
+        prompt = voice_library.get(target)
     except RuntimeError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
 
