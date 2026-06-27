@@ -101,7 +101,9 @@
     <div class="speak">
       <TextArea label="Speak with this voice" bind:value={speakText} rows={2} placeholder="Text to synthesize..." />
       <Button size="sm" variant="primary" onclick={speak} loading={generating}>Generate</Button>
-      {#if audio}<AudioPlayer blob={audio} downloadName={voice.slug} />{/if}
+      {#if generating || audio}
+        <AudioPlayer blob={audio} loading={generating} downloadName={voice.slug} />
+      {/if}
     </div>
   </div>
 </article>

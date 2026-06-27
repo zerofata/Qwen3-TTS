@@ -161,7 +161,7 @@
     <div class="stack">
       <TextArea label="Text to speak" bind:value={text} rows={4} placeholder="Enter text to generate..." />
       <Button variant="primary" onclick={generate} loading={generating}>Clone &amp; Generate</Button>
-      <AudioPlayer blob={audio} downloadName="voice-clone" />
+      <AudioPlayer blob={audio} loading={generating} downloadName="voice-clone" />
 
       <div class="save">
         <SectionHeader

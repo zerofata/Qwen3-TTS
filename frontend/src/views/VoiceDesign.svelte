@@ -101,7 +101,7 @@
   <Panel>
     <SectionHeader title="Output" description="Preview, then freeze to reuse this exact voice." />
     <div class="stack">
-      <AudioPlayer blob={audio} downloadName="voice-design" />
+      <AudioPlayer blob={audio} {loading} downloadName="voice-design" />
       <div class="freeze">
         <SectionHeader
           title="Freeze to library"

@@ -74,6 +74,6 @@
 
   <Panel>
     <SectionHeader title="Output" description="Preview and download the generated clip." />
-    <AudioPlayer blob={audio} downloadName="custom-voice" />
+    <AudioPlayer blob={audio} {loading} downloadName="custom-voice" />
   </Panel>
 </div>
