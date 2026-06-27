@@ -1,0 +1,50 @@
+<script lang="ts">
+  let {
+    label,
+    value = $bindable(""),
+    placeholder = "",
+    hint,
+    id = crypto.randomUUID(),
+  }: {
+    label: string;
+    value?: string;
+    placeholder?: string;
+    hint?: string;
+    id?: string;
+  } = $props();
+</script>
+
+<div class="field">
+  <label for={id}>{label}</label>
+  <input {id} type="text" bind:value {placeholder} />
+  {#if hint}<p class="hint">{hint}</p>{/if}
+</div>
+
+<style>
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  label {
+    font-size: var(--text-sm);
+    font-weight: 560;
+  }
+  input {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-md);
+    transition: border-color 0.12s ease, box-shadow 0.12s ease;
+  }
+  input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--focus-ring);
+  }
+  .hint {
+    font-size: var(--text-xs);
+    color: var(--muted);
+  }
+</style>

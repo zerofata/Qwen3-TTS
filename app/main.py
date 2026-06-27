@@ -1,22 +1,27 @@
-"""FastAPI application entry point with Gradio mounted.
+"""FastAPI application entry point for Qwen 3 TTS.
 
-This module creates the main FastAPI application and mounts a Gradio
-interface at the /ui path.
+Serves three things from one process (``uvicorn app.main:app``):
+
+* the OpenAI-compatible ``/v1`` API (kept for Open WebUI),
+* the SPA-facing JSON/audio API under ``/api`` (see ``routes/studio.py``),
+* the built Svelte single-page app as static files at ``/``.
 """
 
 # pyright: reportMissingImports=false
 
+import os
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import gradio as gr
+from fastapi.staticfiles import StaticFiles
 
 from app.api.routes import (
     models_router,
     speech_router,
     status_router,
+    studio_router,
     transcribe_router,
     voices_router,
 )
@@ -24,38 +29,22 @@ from app.config import Settings
 
 settings = Settings()
 
-
-def get_gradio_app() -> gr.Blocks:
-    """Import and create the real Gradio application."""
-    from app.ui.gradio_app import create_app
-
-    return create_app()
-
-
-def get_ui_assets() -> dict:
-    """Theme/css/js/head for the mounted Gradio app (moved off Blocks in gr 6)."""
-    from app.ui.gradio_app import THEME, THEME_CSS, BACKGROUND_JS, HEAD
-
-    return {
-        "theme": THEME,
-        "css": THEME_CSS,
-        "js": BACKGROUND_JS or None,
-        "head": HEAD,
-    }
+# Built SPA assets land here in the container image (see Dockerfile node stage).
+WEB_DIR = os.environ.get("WEB_DIR", "/app/web")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     """Handle application startup and shutdown."""
-    print(f"Starting Qwen3-TTS Unified on {settings.API_HOST}:{settings.API_PORT}")
+    print(f"Starting Qwen 3 TTS on {settings.API_HOST}:{settings.API_PORT}")
     yield
-    print("Shutting down Qwen3-TTS Unified")
+    print("Shutting down Qwen 3 TTS")
 
 
 app = FastAPI(
-    title="Qwen3-TTS Unified API",
-    description="OpenAI-compatible TTS API with Gradio UI",
-    version="1.0.0",
+    title="Qwen 3 TTS",
+    description="OpenAI-compatible TTS API with a custom Svelte front-end",
+    version="2.0.0",
     lifespan=lifespan,
 )
 
@@ -67,11 +56,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# OpenAI-compatible API (unchanged; consumed by Open WebUI).
 app.include_router(speech_router, prefix="/v1", tags=["audio"])
 app.include_router(voices_router, prefix="/v1", tags=["audio"])
 app.include_router(models_router, prefix="/v1", tags=["models"])
 app.include_router(transcribe_router, prefix="/v1", tags=["audio"])
 app.include_router(status_router, prefix="/v1", tags=["status"])
+
+# SPA-facing API.
+app.include_router(studio_router, prefix="/api", tags=["studio"])
 
 
 @app.get("/health")
@@ -80,10 +73,11 @@ async def health_check() -> dict:
     return {"status": "ok"}
 
 
-gradio_interface = get_gradio_app()
-app = gr.mount_gradio_app(
-    app,
-    gradio_interface,
-    path="/ui",
-    **get_ui_assets(),
-)
+# Serve the built SPA at the root. ``html=True`` makes StaticFiles fall back to
+# index.html for client-side routes and returns it for "/". Mounted last so it
+# never shadows the API routers above. When the build is absent (local dev
+# before ``npm run build``), skip the mount so the API still boots.
+if os.path.isdir(WEB_DIR):
+    app.mount("/", StaticFiles(directory=WEB_DIR, html=True), name="spa")
+else:
+    print(f"SPA assets not found at {WEB_DIR}; serving API only.")

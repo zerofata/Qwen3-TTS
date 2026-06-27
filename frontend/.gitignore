@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.local
+.vite/
+
+# The repo-root .gitignore has a Python-style `lib/` rule; re-include our
+# Svelte component source under src/lib (the dir itself, then its contents).
+!src/lib/
+!src/lib/**
