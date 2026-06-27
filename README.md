@@ -1,5 +1,14 @@
 # Qwen3-TTS
 
+> Modifications in this fork (Apache-2.0). This is a fork of
+> [Seven-94/Qwen3-TTS](https://github.com/Seven-94/Qwen3-TTS) (which adds the unified
+> Gradio UI + OpenAI-compatible API on top of [QwenLM/Qwen3-TTS](https://github.com/QwenLM/Qwen3-TTS)).
+> On top of that, the `tcu` branch:
+> - merges the original QwenLM tokenizer-decode padding fixes,
+> - adds a persistent, named Voice Library (save/freeze/select cloned and designed voices,
+>   surfaced in a new Gradio tab and via the `voice` field of `POST /v1/audio/speech`),
+> - fixes the Custom Voice speaker presets to names the model actually ships.
+
 <br>
 
 <p align="center">
