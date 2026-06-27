@@ -11,17 +11,19 @@ from typing import Tuple, Optional, List
 from app.core.model_manager import model_manager
 
 
-# Supported speakers
+# Supported speakers. The four names below replace upstream's Chloe/Luna/Owen/Zoe,
+# which the CustomVoice model does not ship and which raise "Unsupported speakers"
+# at generation time.
 SPEAKERS = [
     "Vivian",
     "Ryan",
     "Serena",
     "Aiden",
-    "Chloe",
+    "Dylan",
     "Eric",
-    "Luna",
-    "Owen",
-    "Zoe",
+    "Uncle_Fu",
+    "Ono_Anna",
+    "Sohee",
 ]
 
 # Supported languages
