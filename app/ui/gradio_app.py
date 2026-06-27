@@ -42,14 +42,21 @@ HEAD = (
     '" rel="stylesheet">'
 )
 
+# Etched-arcane theme. The real work of killing Gradio's default slate-blue
+# surfaces is done by overriding CSS variables in theme.css (under :root/.dark);
+# here we just steer the base hues to amber/neutral and zero out radii.
 THEME = gr.themes.Base(
     primary_hue="amber",
-    secondary_hue="purple",
-    neutral_hue="slate",
+    secondary_hue="amber",
+    neutral_hue="gray",
 ).set(
     body_background_fill="transparent",
     body_background_fill_dark="transparent",
     block_background_fill="transparent",
+    block_radius="2px",
+    input_radius="2px",
+    button_large_radius="2px",
+    button_small_radius="2px",
 )
 
 
@@ -67,7 +74,7 @@ def create_app() -> gr.Blocks:
         # Branded hero header
         with gr.Column(elem_id="app-hero"):
             gr.HTML(
-                '<h1>Qwen 3 TTS</h1>'
+                '<h1 class="arc-title">Qwen 3 TTS</h1>'
                 '<div class="arc-tagline">Voice cloning &middot; design &middot; '
                 'style control</div>'
             )
@@ -82,12 +89,8 @@ def create_app() -> gr.Blocks:
             create_voice_clone_tab()
             create_voice_library_tab()
 
-        # Footer
+        # Footer (etched rule only, no marketing text)
         with gr.Column(elem_id="app-footer"):
-            gr.HTML(
-                '<div class="arc-rule"></div>'
-                "<p>Powered by Qwen3-TTS models &middot; one model resident at a "
-                "time (24GB+ GPU recommended).</p>"
-            )
+            gr.HTML('<div class="arc-rule"></div>')
 
     return demo
